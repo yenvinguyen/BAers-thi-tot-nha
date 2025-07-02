@@ -26,8 +26,11 @@
       Your browser does not support the audio element.
     </audio>
 
-    <script src="https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.160.1/examples/js/controls/OrbitControls.js"></script>
+    <!-- THREE.JS ổn định và tương thích -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://threejs.org/examples/js/loaders/FontLoader.js"></script>
+    <script src="https://threejs.org/examples/js/geometries/TextGeometry.js"></script>
 
     <script>
       const scene = new THREE.Scene();
@@ -44,13 +47,19 @@
       document.body.appendChild(renderer.domElement);
 
       const controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
 
       const fontLoader = new THREE.FontLoader();
       const textureLoader = new THREE.TextureLoader();
 
-      const phrases = ["Chúc thi tốt nha", "mãi mãi là nhà", "BAers", "điểm cao", "mãi yêu BA"];
+      const phrases = [
+        "Chúc thi tốt nha",
+        "Mãi mãi là nhà",
+        "BAers",
+        "Điểm cao",
+        "Mãi yêu BA"
+      ];
 
-      // Load ảnh
       const images = ["image1.jpg", "image2.jpg"];
       const hearts = [];
 
@@ -93,6 +102,7 @@
         hearts.push(mesh);
       }
 
+      // Tạo nội dung
       for (let i = 0; i < 30; i++) {
         const pos = new THREE.Vector3(
           (Math.random() - 0.5) * 100,
@@ -131,7 +141,7 @@
 
       animate();
 
-      window.addEventListener('resize', () => {
+      window.addEventListener("resize", () => {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
