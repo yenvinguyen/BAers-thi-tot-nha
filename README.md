@@ -1,2 +1,143 @@
 # BAers-thi-tot-nha
 hihihehe
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Love Space</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        background: black;
+      }
+      canvas {
+        display: block;
+      }
+      #audio {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 10;
+      }
+    </style>
+  </head>
+  <body>
+    <audio id="audio" controls autoplay loop>
+      <source src="your-music.mp3" type="audio/mp3" />
+      Your browser does not support the audio element.
+    </audio>
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.1/examples/js/controls/OrbitControls.js"></script>
+
+    <script>
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+      );
+      camera.position.z = 50;
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+
+      const controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+      const fontLoader = new THREE.FontLoader();
+      const textureLoader = new THREE.TextureLoader();
+
+      const phrases = ["Chúc thi tốt nha", "mãi mãi là nhà", "BAers", "điểm cao", "mãi yêu BA"];
+
+      // Load ảnh
+      const images = ["image1.jpg", "image2.jpg", "image3.jpg"];
+      const hearts = [];
+
+      function createFloatingText(text, position) {
+        fontLoader.load("https://threejs.org/examples/fonts/helvetiker_regular.typeface.json", function (font) {
+          const geometry = new THREE.TextGeometry(text, {
+            font: font,
+            size: 2,
+            height: 0.2,
+          });
+          const material = new THREE.MeshBasicMaterial({ color: 0xff66cc });
+          const mesh = new THREE.Mesh(geometry, material);
+          mesh.position.copy(position);
+          scene.add(mesh);
+        });
+      }
+
+      function createImage(url, position) {
+        textureLoader.load(url, (texture) => {
+          const geometry = new THREE.PlaneGeometry(8, 6);
+          const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
+          const plane = new THREE.Mesh(geometry, material);
+          plane.position.copy(position);
+          scene.add(plane);
+        });
+      }
+
+      function createHeart(position) {
+        const shape = new THREE.Shape();
+        const x = 0, y = 0;
+        shape.moveTo(x, y);
+        shape.bezierCurveTo(x, y + 5, x - 5, y + 15, x, y + 20);
+        shape.bezierCurveTo(x + 5, y + 15, x + 5, y + 5, x, y);
+        const geometry = new THREE.ShapeGeometry(shape);
+        const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.scale.set(0.1, 0.1, 0.1);
+        mesh.position.copy(position);
+        scene.add(mesh);
+        hearts.push(mesh);
+      }
+
+      for (let i = 0; i < 30; i++) {
+        const pos = new THREE.Vector3(
+          (Math.random() - 0.5) * 100,
+          (Math.random() - 0.5) * 100,
+          (Math.random() - 0.5) * 100
+        );
+        createFloatingText(phrases[Math.floor(Math.random() * phrases.length)], pos);
+      }
+
+      for (let i = 0; i < 5; i++) {
+        const pos = new THREE.Vector3(
+          (Math.random() - 0.5) * 100,
+          (Math.random() - 0.5) * 100,
+          (Math.random() - 0.5) * 100
+        );
+        createImage(images[i % images.length], pos);
+      }
+
+      for (let i = 0; i < 50; i++) {
+        const pos = new THREE.Vector3(
+          (Math.random() - 0.5) * 100,
+          (Math.random() - 0.5) * 100,
+          (Math.random() - 0.5) * 100
+        );
+        createHeart(pos);
+      }
+
+      function animate() {
+        requestAnimationFrame(animate);
+        hearts.forEach((h) => {
+          h.rotation.z += 0.01;
+        });
+        controls.update();
+        renderer.render(scene, camera);
+      }
+
+      animate();
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+    </script>
+  </body>
+</html>
