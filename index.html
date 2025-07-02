@@ -1,3 +1,8 @@
+from pathlib import Path
+import zipfile
+
+# Tạo nội dung cho file index.html với font online
+index_html_content = """
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -26,11 +31,10 @@
       Your browser does not support the audio element.
     </audio>
 
-    <!-- THREE.JS ổn định và tương thích -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://threejs.org/examples/js/loaders/FontLoader.js"></script>
-    <script src="https://threejs.org/examples/js/geometries/TextGeometry.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.1/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.1/examples/js/loaders/FontLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.1/examples/js/geometries/TextGeometry.js"></script>
 
     <script>
       const scene = new THREE.Scene();
@@ -47,24 +51,16 @@
       document.body.appendChild(renderer.domElement);
 
       const controls = new THREE.OrbitControls(camera, renderer.domElement);
-      controls.enableDamping = true;
 
       const fontLoader = new THREE.FontLoader();
       const textureLoader = new THREE.TextureLoader();
 
-      const phrases = [
-        "Chúc thi tốt nha",
-        "Mãi mãi là nhà",
-        "BAers",
-        "Điểm cao",
-        "Mãi yêu BA"
-      ];
-
+      const phrases = ["Chúc thi tốt nha", "mãi mãi là nhà", "BAers", "điểm cao", "mãi yêu BA"];
       const images = ["image1.jpg", "image2.jpg"];
       const hearts = [];
 
       function createFloatingText(text, position) {
-        fontLoader.load("https://threejs.org/examples/fonts/helvetiker_regular.typeface.json", function (font) {
+        fontLoader.load("https://threejs.org/examples/fonts/helvetiker_bold.typeface.json", function (font) {
           const geometry = new THREE.TextGeometry(text, {
             font: font,
             size: 2,
@@ -102,7 +98,6 @@
         hearts.push(mesh);
       }
 
-      // Tạo nội dung
       for (let i = 0; i < 30; i++) {
         const pos = new THREE.Vector3(
           (Math.random() - 0.5) * 100,
@@ -149,3 +144,18 @@
     </script>
   </body>
 </html>
+"""
+
+# Tạo thư mục và lưu file
+output_dir = Path("/mnt/data/love_space_final")
+output_dir.mkdir(parents=True, exist_ok=True)
+
+index_path = output_dir / "index.html"
+index_path.write_text(index_html_content.strip(), encoding="utf-8")
+
+# Tạo file zip
+zip_path = Path("/mnt/data/love_space_final.zip")
+with zipfile.ZipFile(zip_path, 'w') as zipf:
+    zipf.write(index_path, arcname="index.html")
+
+zip_path.name
